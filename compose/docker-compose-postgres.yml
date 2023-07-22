@@ -65,7 +65,7 @@ services:
           psql -h postgres -U postgres -c "CREATE DATABASE school_management_base_refactor"
         fi
       
-        if psql -h postgres -U postgres -lqt | cut -d \| -f 1 | grep -qw "visionrent_db"; then
+        if psql -h postgres -U postgres -lqt | cut -d \| -f 1 | grep -qw "visionrent"; then
           echo "Database visionrent_db already exists."
         else
           psql -h postgres -U postgres -c "CREATE DATABASE visionrent_db"
