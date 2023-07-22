@@ -59,8 +59,17 @@ services:
     command: |
       sh -c '
         sleep 5 # Wait for the Postgres container to start
-        psql -h postgres -U postgres -c "CREATE DATABASE school_management_base_refactor"
-        psql -h postgres -U postgres -c "CREATE DATABASE visionrent_db"
+        if psql -h postgres -U postgres -lqt | cut -d \| -f 1 | grep -qw "school_management_base_refactor"; then
+          echo "Database school_management_base_refactor already exists."
+        else
+          psql -h postgres -U postgres -c "CREATE DATABASE school_management_base_refactor"
+        fi
+      
+        if psql -h postgres -U postgres -lqt | cut -d \| -f 1 | grep -qw "visionrent_db"; then
+          echo "Database visionrent_db already exists."
+        else
+          psql -h postgres -U postgres -c "CREATE DATABASE visionrent_db"
+        fi
       '
 
 volumes:
