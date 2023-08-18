@@ -1,6 +1,20 @@
 version: '3.7'
 services:
 
+  bibliosphere-Backend-python:
+    container_name: bibliosphere-Backend-python
+    image: sametyaprak/phton-image:latest
+    ports:
+      - "8000:8000"
+
+  school-management-front-end:
+    container_name: school-management-front-end
+    image: sametyaprak/front-end-school-management
+    ports:
+      - "3000:3000"
+    depends_on:
+      - spring-boot-school-management
+
   spring-boot-school-management:
     container_name: spring-boot-school-management
     image: sametyaprak/school-management:1.0.0
