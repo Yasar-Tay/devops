@@ -1,0 +1,83 @@
+version: '3.7'
+services:
+
+  spring-boot-school-management:
+    container_name: spring-boot-school-management
+    image: sametyaprak/school-management:1.0.0
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/school_management_base_refactor
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=changeme
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    ports:
+      - "8092:8092"
+    depends_on:
+      - create-databases
+
+  spring-boot-car-rental:
+    container_name: spring-boot-car-rental
+    image: sametyaprak/visionrent:1.0.0
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/visionrent_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=changeme
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    ports:
+      - "8091:8091"
+    depends_on:
+      - create-databases
+
+  postgres:
+    container_name: postgres_container
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    restart: unless-stopped
+    depends_on:
+      - postgres
+
+  create-databases:
+    image: postgres
+    depends_on:
+      - postgres
+    environment:
+      - PGPASSWORD=changeme
+    command: |
+      sh -c '
+        sleep 5 # Wait for the Postgres container to start
+        if psql -h postgres -U postgres -lqt | cut -d \| -f 1 | grep -qw "school_management_base_refactor"; then
+          echo "Database school_management_base_refactor already exists."
+        else
+          psql -h postgres -U postgres -c "CREATE DATABASE school_management_base_refactor"
+        fi
+      
+        if psql -h postgres -U postgres -lqt | cut -d \| -f 1 | grep -qw "visionrent_db"; then
+          echo "Database visionrent_db already exists."
+        else
+          psql -h postgres -U postgres -c "CREATE DATABASE visionrent_db"
+        fi
+      '
+
+volumes:
+  postgres:
+  pgadmin:
