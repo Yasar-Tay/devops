@@ -1,6 +1,5 @@
 version: '3.7'
 services:
-
   spring-boot-gaming-pro-market:
     container_name: spring-boot-gaming-pro-market
     image: sametyaprak/gaming-market:1.0.0-SNAPSHOT
@@ -13,10 +12,14 @@ services:
       - "8092:8092"
     depends_on:
       - create-databases
+    networks:
+      - my-network
 
   gaming-pro-market-front-end:
     container_name: gaming-pro-market-front-end
     image: sametyaprak/front-end-game-market:latest
+    networks:
+      - my-network
     ports:
       - "3000:3000"
     depends_on:
@@ -34,7 +37,8 @@ services:
     ports:
       - "5432:5432"
     restart: unless-stopped
-
+    networks:
+      - my-network
 
   pgadmin:
     container_name: pgadmin_container_game
@@ -50,6 +54,8 @@ services:
     restart: unless-stopped
     depends_on:
       - postgres
+    networks:
+      - my-network
 
   create-databases:
     container_name: database_initializer
@@ -67,6 +73,11 @@ services:
           psql -h postgres -U postgres -c "CREATE DATABASE gamingpromarket"
         fi
       '
+    networks:
+      - my-network
+
+networks:
+  my-network:
 
 volumes:
   postgres:
