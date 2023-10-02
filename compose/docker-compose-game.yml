@@ -57,6 +57,14 @@ services:
     networks:
       - my-network
 
+  jenkins:
+    container_name: jenkins
+    image: jenkins/jenkins
+    networks:
+      - my-network
+    ports:
+      - "8080:8080"
+
   create-databases:
     container_name: database_initializer
     image: postgres
