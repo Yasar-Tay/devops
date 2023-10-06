@@ -10,6 +10,7 @@ services:
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     ports:
       - "8092:8092"
+    restart: unless-stopped
     depends_on:
       - create-databases
     networks:
@@ -22,6 +23,7 @@ services:
       - my-network
     ports:
       - "3000:3000"
+    restart: unless-stopped
     depends_on:
       - spring-boot-gaming-pro-market
 
