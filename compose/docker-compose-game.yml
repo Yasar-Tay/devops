@@ -16,6 +16,7 @@ services:
     networks:
       - my-network
 
+
   gaming-pro-market-front-end:
     container_name: gaming-pro-market-front-end
     image: sametyaprak/front-end-game-market:latest
